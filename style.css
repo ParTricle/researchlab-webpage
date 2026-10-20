@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сайт-визитка: Косткин Ярослав Алексеевич</title>
+    
+    <!-- 1. Подключение нестандартного шрифта (Google Fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- 2. Подключение Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- 3. Подключение ваших собственных стилей -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Логотип сайта -->
+    <div class="logo-container">
+        <!-- Замените logo.png на ваш файл логотипа, или используйте текст -->
+        <img src="logo 160x160.jpg" alt="Логотип" class="site-logo">
+        <span class="logo-text">MyPortfolio</span>
+    </div>
+
+    <!-- Верхняя строка с информацией о ФИО -->
+    <header class="container text-center py-4">
+        <h1 class="display-5 fw-bold">Информация о разработчике</h1>
+    </header>
+
+    <main class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                
+                <!-- 4. ВАЖНО: Картинка теперь добавляется через CSS (фон этого div) -->
+                <div class="my-photo-css"></div>
+                
+                <p class="name-text fs-4 fw-bold mt-3">Иванов Иван Иванович</p>
+                
+                <section class="about-section mt-4 p-4 bg-light rounded">
+                    <h2>Обо мне</h2>
+                    <p>Я начинающий веб-разработчик. Изучаю HTML, CSS, JavaScript и основы работы с серверами. Люблю решать сложные задачи и создавать удобные интерфейсы.</p>
+                </section>
+
+                <section class="skills-section mt-4 p-4 bg-light rounded">
+                    <h2>Мои навыки</h2>
+                    <ul class="list-group list-group-flush text-start">
+                        <li class="list-group-item bg-light">HTML5 и семантическая верстка</li>
+                        <li class="list-group-item bg-light">CSS3 и адаптивный дизайн</li>
+                        <li class="list-group-item bg-light">Основы JavaScript</li>
+                        <li class="list-group-item bg-light">Работа с Git</li>
+						<li class="list-group-item bg-light">участие в походах к холодильнику</li>
+						
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS (опционально, для интерактивных компонентов) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
