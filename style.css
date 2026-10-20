@@ -138,3 +138,71 @@ body.dark-theme .theme-btn:hover {
     background-color: #ccc;
     color: #1a1a1a;
 }
+/* === Обертка для картинки и окошка (нужна для позиционирования) === */
+.photo-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* === Делаем картинку похожей на кнопку === */
+.skills-photo {
+    cursor: pointer; /* Курсор-лапка при наведении */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.skills-photo:hover {
+    transform: scale(1.05); /* Легкое увеличение при наведении */
+    box-shadow: 0 6px 12px rgba(13, 110, 253, 0.4);
+}
+
+.skills-photo:active {
+    transform: scale(0.98); /* Эффект "нажатия" */
+}
+
+/* === Стили для всплывающего окошка === */
+/* === Обертка для картинки (контейнер для всплывающих окошек) === */
+.photo-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* === Стили для всплывающего окошка === */
+.click-popup {
+    position: absolute;
+    top: -65px;
+    left: 50%;
+    
+    /* Базовое центрирование, смещение и поворот зададим через JS */
+    transform: translateX(-50%) rotate(0deg);
+    
+    background-color: #ffffff;
+    color: #0d6efd;
+    border: 3px solid #0d6efd;
+    border-radius: 12px;
+    padding: 8px 20px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    
+    /* Анимация появления */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+/* Класс для показа окошка */
+.click-popup.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Адаптация под темную тему */
+body.dark-theme .click-popup {
+    background-color: #2c2c2c;
+    color: #6cb4ff;
+    border-color: #6cb4ff;
+}
