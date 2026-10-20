@@ -30,59 +30,105 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
     const catButton = document.getElementById('cat-button');
     const wrapper = document.querySelector('.photo-wrapper');
+    const fullscreenGif = document.getElementById('fullscreen-gif');
 
     console.log('✅ Скрипт загружен');
-    console.log('🐱 Кнопка котика:', catButton);
-    console.log('📦 Контейнер:', wrapper);
 
-    if (!catButton || !wrapper) {
+    if (!catButton || !wrapper || !fullscreenGif) {
         console.error('❌ Ошибка: не найдены элементы');
         return;
     }
 
-    // Вспомогательная функция для случайного числа в диапазоне
+    // === ПЕРЕМЕННЫЕ ДЛЯ ОТСЛЕЖИВАНИЯ КЛИКОВ ===
+    let clickTimestamps = []; // Массив временных меток кликов
+    let currentCatImage = 1; // Текущая картинка котика (1 или 2)
+
+    // Пути к картинкам котика (замените на ваши реальные имена)
+    const catImages = {
+        1: 'cat1.png',
+        2: 'cat2.png'
+    };
+
+    // Вспомогательная функция для случайного числа
     function getRandomNumber(min, max) {
         return Math.random() * (max - min) + min;
     }
 
-    catButton.addEventListener('click', () => {
-        console.log('🖱️ Клик по котику! Создаем новое окошко...');
+    // === ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ КАРТИНКИ КОТИКА ===
+    function toggleCatImage() {
+        currentCatImage = currentCatImage === 1 ? 2 : 1;
+        catButton.style.backgroundImage = `url('${catImages[currentCatImage]}')`;
+        console.log(`🐱 Котик сменил лапы: картинка ${currentCatImage}`);
+    }
 
-        // 1. Создаем новый элемент окошка
+    // === ФУНКЦИЯ ПРОВЕРКИ 10 КЛИКОВ ЗА 2 СЕКУНДЫ ===
+    function checkRapidClicks() {
+        const now = Date.now();
+        
+        // Удаляем старые клики (старше 2 секунд)
+        clickTimestamps = clickTimestamps.filter(timestamp => now - timestamp < 2000);
+        
+        console.log(`⏱️ Кликов за последние 2 секунды: ${clickTimestamps.length}`);
+
+        // Если за 2 секунды было 10+ кликов - показываем гифку
+        if (clickTimestamps.length >= 10) {
+            console.log('🎉 10 кликов за 2 секунды! Показываем гифку!');
+            showFullscreenGif();
+            clickTimestamps = []; // Сбрасываем счетчик
+        }
+    }
+
+    // === ФУНКЦИЯ ПОКАЗА ПОЛНОЭКРАННОЙ ГИФКИ ===
+    function showFullscreenGif() {
+        fullscreenGif.classList.add('show');
+        
+        // Скрываем гифку через 3 секунды
+        setTimeout(() => {
+            fullscreenGif.classList.remove('show');
+            console.log('🎬 Гифка скрыта');
+        }, 4800);
+    }
+
+    // === ОБРАБОТЧИК КЛИКА ПО КОТИКУ ===
+    catButton.addEventListener('click', () => {
+        console.log('🖱️ Клик по котику!');
+
+        // 1. Добавляем временную метку клика
+        clickTimestamps.push(Date.now());
+
+        // 2. Переключаем картинку котика
+        toggleCatImage();
+
+        // 3. Проверяем, не было ли 10 кликов за 2 секунды
+        checkRapidClicks();
+
+        // 4. Создаем всплывающее окошко "клац"
         const popup = document.createElement('div');
         popup.className = 'click-popup';
         popup.textContent = 'клац';
 
-        // 2. Генерируем случайные значения
-        const randomX = getRandomNumber(-20, 20);   // Смещение по X: -20..20 px
-        const randomRot = getRandomNumber(-10, 10); // Поворот: -10..10 градусов
+        const randomX = getRandomNumber(-20, 20);
+        const randomRot = getRandomNumber(-10, 10);
 
         console.log('📍 Смещение X:', randomX, 'px');
         console.log('🔄 Поворот:', randomRot, 'градусов');
 
-        // 3. Применяем случайные значения через inline-стили
-        //    Заменяем базовый transform на новый с учетом случайных значений
         popup.style.transform = `translateX(calc(-50% + ${randomX}px)) rotate(${randomRot}deg)`;
 
-        // 4. Добавляем окошко в контейнер
         wrapper.appendChild(popup);
-        console.log('✨ Окошко добавлено в DOM:', popup);
 
-        // 5. Запускаем анимацию появления (через микро-задержку, чтобы transition сработал)
         requestAnimationFrame(() => {
             popup.classList.add('show');
         });
 
-        // 6. Через 2 секунды плавно скрываем и удаляем элемент
         setTimeout(() => {
             popup.classList.remove('show');
-            // Ждем окончания анимации исчезновения (0.3 сек), затем удаляем из DOM
             setTimeout(() => {
                 if (popup.parentNode) {
                     popup.parentNode.removeChild(popup);
-                    console.log('🗑️ Окошко удалено из DOM');
                 }
             }, 300);
         }, 2000);
     });
+
 });
