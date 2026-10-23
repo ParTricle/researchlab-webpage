@@ -30,14 +30,17 @@ if (isset($_POST['submit'])) {
              (@$_FILES["file"]["type"] == "image/png")) &&
              (@$_FILES["file"]["size"] < 102400)) {
 
-            move_uploaded_file($_FILES["file"]["tmp_name"], "upload/" . $_FILES["file"]["name"]);
-            $fname = $_FILES["file"]["name"];
-            // сохраним имя файла в посте
-            $id = mysqli_insert_id($link);
-            mysqli_query($link, "UPDATE posts SET filename='$fname' WHERE id=$id");
-            echo "Load in: upload/" . $fname;
+             if (move_uploaded_file($_FILES["file"]["tmp_name"], "upload/" . $_FILES["file"]["name"])) {
+                $fname = $_FILES["file"]["name"];
+                $id = mysqli_insert_id($link);
+                mysqli_query($link, "UPDATE posts SET filename='$fname' WHERE id=$id");
+                echo "Load in: upload/" . $fname;
+            } else {
+                echo "ОШИБКА: Не удалось переместить файл. Проверь права на папку upload!";
+            }
+            
         } else {
-            echo "upload failed!";
+            echo "upload failed! (Файл слишком большой или неверный тип)";
         }
     }
 
@@ -85,7 +88,10 @@ if (isset($_POST['submit'])) {
                 
                 <!-- 4. ВАЖНО: Картинка теперь добавляется через CSS (фон этого div) -->
                 <div class="my-photo-css"></div>
-                
+                <!-- Кнопка перехода к списку постов -->
+		<div class="text-center mt-4 mb-2">
+		    <a href="/index.php" class="btn btn-success btn-lg">📖 Перейти ко всем постам</a>
+		</div>
                 <p class="name-text fs-4 fw-bold mt-3">Косткин Ярослав Алексеевич</p>
                 
                 <section class="about-section mt-4 p-4 bg-light rounded">
@@ -94,47 +100,46 @@ if (isset($_POST['submit'])) {
                 </section>
 
                 <section class="skills-section mt-4 p-4 bg-light rounded">
-					<div class="skills-container">
-						<!-- Левая часть: Текст о навыках -->
-						<div class="skills-text">
-							<h2>Мои навыки</h2>
-							<ul class="list-group list-group-flush text-start">
-								<li class="list-group-item bg-light">HTML и семантическая верстка</li>
-								<li class="list-group-item bg-light">CSS и адаптивный дизайн</li>
-								<li class="list-group-item bg-light">Основы JavaScript</li>
-								<li class="list-group-item bg-light">Работа с Git</li>
-								<li class="list-group-item bg-light">Походы к холодильнику</li>
-								<li class="list-group-item bg-light">Вайб кукодинг</li>
-							</ul>
-						</div>
-						
-						<!-- Правая часть: Картинка через CSS -->
-						<div class="photo-wrapper">
-							<div class="my-photo-css skills-photo" id="cat-button"></div>
-							
-						</div>
-					</div>
-				</section>
-				<!-- === ФОРМА СОЗДАНИЯ ПОСТА === -->
-				<section class="post-form-section mt-4 p-4 bg-light rounded">
-					<h2>Создать пост</h2>
-					<form method="POST" action="/profile.php" enctype="multipart/form-data" name="upload">
-						<div class="mb-3">
-							<label class="form-label">Заголовок</label>
-							<input type="text" name="title" class="form-control" required>
-						</div>
-						<div class="mb-3">
-							<label class="form-label">Текст поста</label>
-							<textarea name="text" class="form-control" rows="4" required></textarea>
-						</div>
-						<div class="mb-3">
-							<label class="form-label">Картинка (до 100 КБ)</label>
-							<input type="file" name="file" class="form-control">
-						</div>
-						<button type="submit" name="submit" class="btn btn-primary">Сохранить</button>
-					</form>
-				</section>
-            </div>
+			<div class="skills-container">
+				<!-- Левая часть: Текст о навыках -->
+				<div class="skills-text">
+					<h2>Мои навыки</h2>
+					<ul class="list-group list-group-flush text-start">
+						<li class="list-group-item bg-light">HTML и семантическая верстка</li>
+						<li class="list-group-item bg-light">CSS и адаптивный дизайн</li>
+						<li class="list-group-item bg-light">Основы JavaScript</li>
+						<li class="list-group-item bg-light">Работа с Git</li>
+						<li class="list-group-item bg-light">Походы к холодильнику</li>
+						<li class="list-group-item bg-light">Вайб кукодинг</li>
+					</ul>
+				</div>
+				
+				<!-- Правая часть: Картинка через CSS -->
+				<div class="photo-wrapper">
+					<div class="my-photo-css skills-photo" id="cat-button"></div>						
+				</div>
+			</div>
+		</section>
+		<!-- === ФОРМА СОЗДАНИЯ ПОСТА === -->
+		<section class="post-form-section mt-4 p-4 bg-light rounded">
+			<h2>Создать пост</h2>
+			<form method="POST" action="/profile.php" enctype="multipart/form-data" name="upload">
+				<div class="mb-3">
+					<label class="form-label">Заголовок</label>
+					<input type="text" name="title" class="form-control" required>
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Текст поста</label>
+					<textarea name="text" class="form-control" rows="4" required></textarea>
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Картинка (до 100 КБ)</label>
+					<input type="file" name="file" class="form-control">
+				</div>
+				<button type="submit" name="submit" class="btn btn-primary">Сохранить</button>
+			</form>
+		</section>
+           </div>
         </div>
     </main>
     <script src="script.js"></script>

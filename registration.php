@@ -1,7 +1,7 @@
 <?php
 require_once('db.php');
 
-$link = mysqli_connect('127.0.0.1', 'root', 'Qwe123132', 'first');
+$link = mysqli_connect('127.0.0.1', 'root', 'Qwe123123', 'first');
 
 // Если уже авторизован — на логин
 if (isset($_COOKIE['User'])) {

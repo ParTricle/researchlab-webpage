@@ -30,7 +30,7 @@ if (!isset($_COOKIE['User'])) {
 } else {
     // === ПОКАЗЫВАЕМ СПИСОК ПОСТОВ ===
     require_once('db.php');
-    $link = mysqli_connect('127.0.0.1', 'root', 'password', 'first');
+    $link = mysqli_connect('127.0.0.1', 'root', 'Qwe123123', 'first');
     $sql = "SELECT * FROM posts";
     $res = mysqli_query($link, $sql);
 ?>
