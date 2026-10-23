@@ -1,3 +1,49 @@
+<?php
+if (!isset($_COOKIE['User'])) {
+    header("Location: login.php");
+    exit();
+}
+require_once('db.php');
+$link = mysqli_connect('127.0.0.1', 'root', 'Qwe123123', 'first');
+
+if (isset($_POST['submit'])) {
+    $title     = $_POST['title'];
+    $main_text = $_POST['text'];
+
+    if (!$title || !$main_text) {
+        die("Заполните все поля");
+    }
+
+    // УЯЗВИМОСТЬ SQLi — прямая подстановка
+    $sql = "INSERT INTO posts (title, main_text) VALUES ('$title', '$main_text')";
+    if (!mysqli_query($link, $sql)) {
+        die("Не удалось добавить пост");
+    }
+
+    // УЯЗВИМОСТЬ PHPi — проверка только по Content-Type
+    if (!empty($_FILES["file"]["name"])) {
+        if (((@$_FILES["file"]["type"] == "image/gif") ||
+             (@$_FILES["file"]["type"] == "image/jpeg") ||
+             (@$_FILES["file"]["type"] == "image/jpg") ||
+             (@$_FILES["file"]["type"] == "image/pjpeg") ||
+             (@$_FILES["file"]["type"] == "image/x-png") ||
+             (@$_FILES["file"]["type"] == "image/png")) &&
+             (@$_FILES["file"]["size"] < 102400)) {
+
+            move_uploaded_file($_FILES["file"]["tmp_name"], "upload/" . $_FILES["file"]["name"]);
+            $fname = $_FILES["file"]["name"];
+            // сохраним имя файла в посте
+            $id = mysqli_insert_id($link);
+            mysqli_query($link, "UPDATE posts SET filename='$fname' WHERE id=$id");
+            echo "Load in: upload/" . $fname;
+        } else {
+            echo "upload failed!";
+        }
+    }
+
+    echo "Пост успешно добавлен!";
+}
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -68,6 +114,25 @@
 							
 						</div>
 					</div>
+				</section>
+				<!-- === ФОРМА СОЗДАНИЯ ПОСТА === -->
+				<section class="post-form-section mt-4 p-4 bg-light rounded">
+					<h2>Создать пост</h2>
+					<form method="POST" action="/profile.php" enctype="multipart/form-data" name="upload">
+						<div class="mb-3">
+							<label class="form-label">Заголовок</label>
+							<input type="text" name="title" class="form-control" required>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Текст поста</label>
+							<textarea name="text" class="form-control" rows="4" required></textarea>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Картинка (до 100 КБ)</label>
+							<input type="file" name="file" class="form-control">
+						</div>
+						<button type="submit" name="submit" class="btn btn-primary">Сохранить</button>
+					</form>
 				</section>
             </div>
         </div>
