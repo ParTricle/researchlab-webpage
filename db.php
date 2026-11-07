@@ -1,49 +1,32 @@
 <?php
-$servername = "127.0.0.1";
-$username   = "root";          // замени на своего пользователя
-$password   = "Qwe123123";      // замени на свой пароль
-$dbName     = "first";         // имя БД (как в задании)
+$servername = "mysql";
+$username   = "researchlab_user";
+$password   = "researchlab_pass";
+$dbName     = "researchlab";
 
-// Подключение к серверу
-$link = mysqli_connect($servername, $username, $password);
-if (!$link) {
-    die("Ошибка подключения: " . mysqli_connect_error());
-}
-
-// Создание БД
-$sql = "CREATE DATABASE IF NOT EXISTS $dbName";
-if (!mysqli_query($link, $sql)) {
-    echo "Не удалось создать БД";
-}
-mysqli_close($link);
-
-// Подключение к созданной БД
+// 1. Подключение к серверу и сразу к БД
 $link = mysqli_connect($servername, $username, $password, $dbName);
+
 if (!$link) {
     die("Ошибка подключения к БД: " . mysqli_connect_error());
 }
 
-// Таблица пользователей
-$sql = "CREATE TABLE IF NOT EXISTS users(
+// 2. Создание таблиц ТОЛЬКО если их еще нет (данные не удаляются!)
+$sql_users = "CREATE TABLE IF NOT EXISTS users(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(15) NOT NULL,
+    username VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    password VARCHAR(20) NOT NULL
+    password VARCHAR(255) NOT NULL
 )";
-if (!mysqli_query($link, $sql)) {
-    echo "Не удалось создать таблицу Users";
-}
+mysqli_query($link, $sql_users);
 
-// Таблица постов (добавляем поле filename для файлов из PHPi)
-$sql = "CREATE TABLE IF NOT EXISTS posts(
+$sql_posts = "CREATE TABLE IF NOT EXISTS posts(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     main_text TEXT NOT NULL,
     filename VARCHAR(255) DEFAULT NULL
 )";
-if (!mysqli_query($link, $sql)) {
-    echo "Не удалось создать таблицу Posts";
-}
+mysqli_query($link, $sql_posts);
 
-mysqli_close($link);
+// ВАЖНО: Мы НЕ вызываем mysqli_close(), чтобы $link был доступен во всех файлах!
 ?>

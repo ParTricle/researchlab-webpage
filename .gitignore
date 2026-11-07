@@ -1,0 +1,25 @@
+# Docker
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+
+# OpenAppSec logs (можно комментировать для отладки)
+openappsec/logs/*.log
+
+# MySQL data
+mysql/data/
+
+# Environment files
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db

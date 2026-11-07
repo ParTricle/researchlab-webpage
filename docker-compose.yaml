@@ -1,0 +1,53 @@
+services:
+  web:
+    build: .
+    container_name: researchlab-web-ParTricle
+    volumes:
+      - .:/var/www/html
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  nginx-waf:
+    image: owasp/modsecurity-crs:nginx-alpine
+    container_name: researchlab-waf-ParTricle
+    ports:
+      - "80:8080"  # Пробрасываем внешний 80 порт на внутренний 8080 контейнера
+    environment:
+      - BACKEND=http://web:80  # Указываем, куда проксировать запросы
+      - BLOCKING_PARANOIA=2
+      - MODSEC_RULE_ENGINE=On
+      - MODSEC_AUDIT_ENGINE=RelevantOnly
+      - MODSEC_AUDIT_LOG=/dev/stdout  # Выводим логи в docker logs для удобства
+    volumes:
+      # Официальный способ добавления своих правил в OWASP CRS
+      - ./nginx/conf/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf:ro
+      - ./nginx/conf/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf:ro
+    depends_on:
+      - web
+      - mysql
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: researchlab-mysql-ParTricle
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: researchlab
+      MYSQL_USER: researchlab_user
+      MYSQL_PASSWORD: researchlab_pass
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+
+networks:
+  app-network:
+    driver: bridge
